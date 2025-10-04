@@ -42,16 +42,16 @@ A modern, user-friendly mortgage calculator with a step-by-step wizard interface
 ```bash
 git clone <your-repository-url>
 cd mortgage-calculator
+```
+
+### 🔒 Security Features
+
+- Helmet for security headers
+- CORS configuration
+- Rate limiting (100 requests per 15 minutes)
+- Input validation on both frontend and backend
+- No sensitive data in localStorage
 
 
-🔒 Security Features
-
-Helmet for security headers
-CORS configuration
-Rate limiting (100 requests per 15 minutes)
-Input validation on both frontend and backend
-No sensitive data in localStorage
-
-
-👨‍💻 Author
+## 👨‍💻 Author
 Built as a learning project for mortgage calculation and estimation.
