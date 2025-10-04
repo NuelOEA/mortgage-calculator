@@ -29,7 +29,6 @@ const MortgageCalculator: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
-    // Load saved data on mount
     useEffect(() => {
         const savedData = loadCalculatorData();
         if (savedData) {
@@ -37,7 +36,6 @@ const MortgageCalculator: React.FC = () => {
         }
     }, []);
 
-    // Auto-save with debounce
     const debouncedSave = useCallback(
         debounce((data: FormData) => {
             saveCalculatorData(data);
@@ -45,7 +43,6 @@ const MortgageCalculator: React.FC = () => {
         []
     );
 
-    // Handle input changes
     const handleInputChange = (field: keyof FormData, value: string) => {
         const newFormData = {
             ...formData,
@@ -56,7 +53,6 @@ const MortgageCalculator: React.FC = () => {
         setError(null);
     };
 
-    // Validation functions
     const isStep1Valid = (): boolean => {
         const price = parseFloat(formData.propertyPrice);
         const deposit = parseFloat(formData.deposit);
@@ -82,11 +78,9 @@ const MortgageCalculator: React.FC = () => {
         return true;
     };
 
-    // Navigation
     const nextStep = () => {
         setError(null);
 
-        // Validate current step
         if (currentStep === 0 && !isStep1Valid()) {
             setError('Please enter valid property price and deposit.');
             return;
@@ -100,7 +94,6 @@ const MortgageCalculator: React.FC = () => {
             return;
         }
 
-        // If on step 2 (last step before results), calculate
         if (currentStep === 2) {
             handleCalculate();
         } else {
@@ -113,7 +106,6 @@ const MortgageCalculator: React.FC = () => {
         setCurrentStep(currentStep - 1);
     };
 
-    // Calculate mortgage
     const handleCalculate = async () => {
         setLoading(true);
         setError(null);
@@ -121,7 +113,7 @@ const MortgageCalculator: React.FC = () => {
         try {
             const response = await calculateMortgage(formData);
             setResults(response.data);
-            setCurrentStep(3); // Move to results step
+            setCurrentStep(3);
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Calculation failed. Please try again.');
         } finally {
@@ -129,7 +121,6 @@ const MortgageCalculator: React.FC = () => {
         }
     };
 
-    // Start over
     const handleStartOver = () => {
         setFormData({
             propertyPrice: '',
@@ -145,7 +136,6 @@ const MortgageCalculator: React.FC = () => {
         clearCalculatorData();
     };
 
-    // Render current step
     const renderStep = () => {
         switch (currentStep) {
             case 0:
@@ -183,51 +173,53 @@ const MortgageCalculator: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 py-8 px-4">
-            <div className="max-w-4xl mx-auto">
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 py-12 px-4 sm:px-6 lg:px-8">
+            <div className="container mx-auto" style={{ maxWidth: '1200px' }}>
                 {/* Header */}
-                <div className="text-center mb-8">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-full mb-4 shadow-lg">
-                        <Home className="text-white" size={32} />
+                <div className="text-center mb-12">
+                    <div className="inline-flex items-center justify-center w-20 h-20 bg-blue-600 rounded-full mb-6 shadow-lg">
+                        <Home className="text-white" size={40} />
                     </div>
-                    <h1 className="text-4xl font-bold text-gray-800 mb-2">
+                    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-800 mb-4">
                         Mortgage Calculator
                     </h1>
-                    <p className="text-gray-600 text-lg">
+                    <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
                         Get a clear picture of your mortgage in just a few steps
                     </p>
-                    <div className="flex items-center justify-center mt-3 text-sm text-green-600">
-                        <CheckCircle size={16} className="mr-1" />
+                    <div className="flex items-center justify-center mt-4 text-sm sm:text-base text-green-600">
+                        <CheckCircle size={20} className="mr-2" />
                         <span>Your progress is automatically saved</span>
                     </div>
                 </div>
 
-                {/* Card */}
-                <div className="bg-white rounded-xl shadow-xl p-6 md:p-8">
-                    {/* Progress Bar - only show if not on results */}
+                {/* Main Card - Full Width */}
+                <div className="bg-white rounded-3xl shadow-2xl p-8 sm:p-12 lg:p-16 w-full">
+                    {/* Progress Bar */}
                     {currentStep < 3 && (
-                        <ProgressBar currentStep={currentStep} />
+                        <div className="mb-12">
+                            <ProgressBar currentStep={currentStep} />
+                        </div>
                     )}
 
-                    {/* Step Content */}
-                    <div className="mb-6">
+                    {/* Step Content - Constrained for readability */}
+                    <div className="max-w-3xl mx-auto mb-10">
                         {renderStep()}
                     </div>
 
                     {/* Error Message */}
                     {error && (
-                        <div className="info-box-red mb-6">
+                        <div className="info-box-red mb-8 max-w-3xl mx-auto">
                             <p className="font-medium">{error}</p>
                         </div>
                     )}
 
-                    {/* Navigation Buttons - only show if not on results */}
+                    {/* Navigation Buttons */}
                     {currentStep < 3 && (
-                        <div className="flex flex-col sm:flex-row gap-4">
+                        <div className="flex flex-col sm:flex-row gap-4 max-w-3xl mx-auto pt-6 border-t border-gray-200">
                             {currentStep > 0 && (
                                 <button
                                     onClick={prevStep}
-                                    className="btn-secondary flex-1"
+                                    className="btn-secondary flex-1 text-lg py-4"
                                     disabled={loading}
                                 >
                                     Back
@@ -236,12 +228,12 @@ const MortgageCalculator: React.FC = () => {
 
                             <button
                                 onClick={nextStep}
-                                className="btn-primary flex-1"
+                                className="btn-primary flex-1 text-lg py-4"
                                 disabled={loading}
                             >
                                 {loading ? (
                                     <span className="flex items-center justify-center">
-                                        <svg className="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
+                                        <svg className="animate-spin h-6 w-6 mr-3" viewBox="0 0 24 24">
                                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                                         </svg>
@@ -259,13 +251,11 @@ const MortgageCalculator: React.FC = () => {
     );
 };
 
-// Debounce utility function
-// Debounce utility function
 function debounce<T extends (...args: any[]) => any>(
     func: T,
     wait: number
 ): (...args: Parameters<T>) => void {
-    let timeout: ReturnType<typeof setTimeout>;  // ✅ Fixed!
+    let timeout: ReturnType<typeof setTimeout>;
     return (...args: Parameters<T>) => {
         clearTimeout(timeout);
         timeout = setTimeout(() => func(...args), wait);

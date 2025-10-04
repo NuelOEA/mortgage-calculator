@@ -1,3 +1,26 @@
+/* Force proper body width */
+html, body {
+  width: 100%;
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+body {
+  min-width: 100vw !important;
+}
+
+#root {
+  width: 100%;
+  min-width: 100%;
+}
+
+@import "tailwindcss";
+
+
+
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
